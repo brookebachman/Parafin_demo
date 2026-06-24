@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ParafinWidget } from "@parafin/react";
 import axios from "axios";
 
@@ -11,12 +11,8 @@ function App() {
   const [error, setError] = useState(null);
 
   const loadWidget = async (pid) => {
-    try {
-      const res = await axios.get(`/api/parafin/token/${pid}`);
-      setToken(res.data.token);
-    } catch (err) {
-      setError(err.response?.data?.error || "Failed to fetch token");
-    }
+    const res = await axios.get(`/api/parafin/token/${pid}`);
+    setToken(res.data.token);
   };
 
   const handleState = async (endpoint, label) => {
@@ -39,6 +35,16 @@ function App() {
     }
   };
 
+  const reloadWidget = async () => {
+    setToken(null);
+    setLoading(true);
+    try {
+      await loadWidget(personId);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -51,41 +57,79 @@ function App() {
       <h1 style={{ fontSize: 24, marginBottom: 8 }}>GrubDash Capital</h1>
       <p style={{ color: "#666", marginBottom: 32 }}>Powered by Parafin</p>
 
-      <div style={{ marginBottom: 32 }}>
-        <label style={{ display: "block", marginBottom: 8, fontWeight: 500 }}>
-          Person ID
-        </label>
-        <div style={{ display: "flex", gap: 8 }}>
-          <input
-            type="text"
-            value={personId}
-            onChange={(e) => setPersonId(e.target.value)}
-            placeholder="person_xxx"
-            style={{
-              flex: 1,
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: 4,
-              fontSize: 14,
-            }}
-          />
+      <div
+        style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}
+      >
+        <button
+          onClick={() => handleState("no-offers", "No Offers")}
+          disabled={loading}
+          style={btnStyle}
+        >
+          1. No Offers
+        </button>
+        <button
+          onClick={() => handleState("pre-approved", "Pre-Approved")}
+          disabled={loading}
+          style={btnStyle}
+        >
+          2. Pre-Approved Offer
+        </button>
+        <button
+          onClick={() => handleState("fund", "Capital On Its Way")}
+          disabled={loading || !businessId}
+          style={btnStyle}
+        >
+          3. Fund (Capital On Its Way)
+        </button>
+        <button
+          onClick={() => handleState("payment", "Outstanding Balance")}
+          disabled={loading || !businessId}
+          style={btnStyle}
+        >
+          4. Payment (Outstanding Balance)
+        </button>
+      </div>
+
+      {(personId || businessId) && (
+        <div
+          style={{
+            padding: 12,
+            background: "#f5f5f5",
+            borderRadius: 4,
+            marginBottom: 24,
+            fontSize: 13,
+          }}
+        >
+          {activeState && (
+            <div>
+              <strong>State:</strong> {activeState}
+            </div>
+          )}
+          {personId && (
+            <div>
+              <strong>Person ID:</strong> {personId}
+            </div>
+          )}
+          {businessId && (
+            <div>
+              <strong>Business ID:</strong> {businessId}
+            </div>
+          )}
           <button
-            onClick={loadWidget}
-            disabled={!personId || loading}
+            onClick={reloadWidget}
             style={{
-              padding: "8px 16px",
-              background: "#111",
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              cursor: personId && !loading ? "pointer" : "not-allowed",
-              fontSize: 14,
+              marginTop: 8,
+              padding: "4px 12px",
+              fontSize: 13,
+              cursor: "pointer",
             }}
           >
-            {loading ? "Loading..." : "Load Widget"}
+            Reload Widget
           </button>
         </div>
-      </div>
+      )}
+
+      {loading && <p>Loading...</p>}
 
       {error && (
         <div
@@ -98,7 +142,7 @@ function App() {
             color: "#c00",
           }}
         >
-          {error}
+          {typeof error === "string" ? error : JSON.stringify(error)}
         </div>
       )}
 
@@ -117,5 +161,15 @@ function App() {
     </div>
   );
 }
+
+const btnStyle = {
+  padding: "8px 16px",
+  background: "#111",
+  color: "#fff",
+  border: "none",
+  borderRadius: 4,
+  cursor: "pointer",
+  fontSize: 14,
+};
 
 export default App;
