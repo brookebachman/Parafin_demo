@@ -71,3 +71,45 @@ app.post("/api/state/no-offers", async (req, res) => {
     res.status(500).json({ error: err.response?.data || err.message });
   }
 });
+
+//State 2 - Pre-approved offer: Creates business, person, bank account, and a flex loan offer all in onecall.
+
+app.post("/api/state/pre-approved", async (req, res) => {
+  try {
+    const data = await parafin(
+      "post",
+      "/sandbox/generate_event/capital_product_offer/created",
+      {
+        offer: {
+          product_type: "flex_loan",
+          max_offer_amount: 50000,
+        },
+        person: {
+          first_name: "Tony",
+          last_name: "Rigatoni",
+          contact_email: "tony@grubdash.com",
+          contact_phone: "4155551234",
+        },
+        business: {
+          legal_name: "Tonys Trattoria LLC",
+          dba_name: "Tonys Trattoria",
+        },
+        bank_account: {
+          routing_number: "021000021",
+          account_number: { last4: "6789" },
+          currency: "USD",
+        },
+      },
+    );
+
+    res.json({
+      state: "pre-approved",
+      personId: data.person.id,
+      businessId: data.business.id,
+      offerId: data.capital_product_offer.id,
+    });
+  } catch (err) {
+    console.error("Pre-approved error:", err.response?.data || err.message);
+    res.status(500).json({ error: err.response?.data || err.message });
+  }
+});
