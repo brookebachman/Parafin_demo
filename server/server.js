@@ -132,3 +132,37 @@ app.post("/api/state/fund", async (req, res) => {
     res.status(500).json({ error: err.response?.data || err.message });
   }
 });
+
+//State 4 - Outstanding balance: Looks up the capital product for the business, then creates a payment against it.
+
+app.post("/api/state/payment", async (req, res) => {
+  try {
+    const { businessId } = req.body;
+
+    const products = await parafin(
+      "get",
+      `/capital_products?business_id=${businessId}`,
+    );
+
+    if (!products.results || products.results.length === 0) {
+      return res.status(400).json({ error: "No capital product found" });
+    }
+
+    const capitalProductId = products.results[0].id;
+
+    const payment = await parafin("post", "/capital_product_payments", {
+      capital_product_id: capitalProductId,
+      amount: 500,
+      type: "automatic",
+    });
+
+    res.json({
+      state: "outstanding-balance",
+      capitalProductId,
+      payment,
+    });
+  } catch (err) {
+    console.error("Payment error:", err.response?.data || err.message);
+    res.status(500).json({ error: err.response?.data || err.message });
+  }
+});
