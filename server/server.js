@@ -113,3 +113,22 @@ app.post("/api/state/pre-approved", async (req, res) => {
     res.status(500).json({ error: err.response?.data || err.message });
   }
 });
+
+// State 3 - Capital on its way: Funds the capital product after you accept the offer in the widget. Takes a businessId in the request body.
+
+app.post("/api/state/fund", async (req, res) => {
+  try {
+    const { businessId } = req.body;
+    const data = await parafin("post", "/sandbox/capital_product/fund", {
+      business_id: businessId,
+    });
+
+    res.json({
+      state: "capital-on-its-way",
+      ...data,
+    });
+  } catch (err) {
+    console.error("Fund error:", err.response?.data || err.message);
+    res.status(500).json({ error: err.response?.data || err.message });
+  }
+});
