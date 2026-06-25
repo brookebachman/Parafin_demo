@@ -100,7 +100,7 @@ app.post("/api/state/pre-approved", async (req, res) => {
           first_name: "Tony",
           last_name: "Rigatoni",
           contact_email: "tony@grubdash.com",
-          contact_phone: "4155551234",
+          contact_phone: "4084061220",
         },
         business: {
           legal_name: "Tonys Trattoria LLC",
