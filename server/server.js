@@ -131,8 +131,9 @@ app.post("/api/state/pre-approved", async (req, res) => {
 app.post("/api/state/fund", async (req, res) => {
   try {
     const { businessId } = req.body;
-    const data = await parafin("post", "/sandbox/capital_product/fund", {
-      business_id: businessId,
+    const data = await parafin("post", "/sandbox/fund_capital_product", {
+      business_parafin_id: businessId,
+      settlement_status: "completed",
     });
 
     res.json({
@@ -162,10 +163,12 @@ app.post("/api/state/payment", async (req, res) => {
 
     const capitalProductId = products.results[0].id;
 
-    const payment = await parafin("post", "/capital_product_payments", {
+    const payment = await parafin("post", "/sandbox/capital_product_payments", {
       capital_product_id: capitalProductId,
-      amount: 500,
-      type: "automatic",
+      state: "complete",
+      payment_type: "sales_based",
+      amount: 1000,
+      started_at: new Date().toISOString(),
     });
 
     res.json({
