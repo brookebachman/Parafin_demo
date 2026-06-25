@@ -30,6 +30,7 @@ npm run dev
 ```
 
 This starts:
+
 - Frontend on http://localhost:3000 (Vite + React)
 - Backend on http://localhost:8080 (Express)
 
@@ -41,12 +42,12 @@ The app uses Parafin's `@parafin/react` widget to embed the capital experience. 
 
 Each button triggers API calls to set up the corresponding state in Parafin's sandbox, then loads the widget with the appropriate bearer token.
 
-| Button | State | What happens |
-|--------|-------|-------------|
-| 1. No Offers | No offers available | Creates a business and person with no offer generated |
+| Button                | State                        | What happens                                                  |
+| --------------------- | ---------------------------- | ------------------------------------------------------------- |
+| 1. No Offers          | No offers available          | Creates a business and person with no offer generated         |
 | 2. Pre-Approved Offer | Pre-approved offer available | Creates a business, person, bank account, and flex loan offer |
-| 3. Fund | Capital on its way | Funds the accepted offer (must accept offer in widget first) |
-| 4. Payment | Outstanding balance | Creates a repayment against the funded capital product |
+| 3. Fund               | Capital on its way           | Funds the accepted offer (must accept offer in widget first)  |
+| 4. Payment            | Outstanding balance          | Creates a repayment against the funded capital product        |
 
 ### Flow
 
