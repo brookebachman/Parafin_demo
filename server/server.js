@@ -11,6 +11,18 @@ const PARAFIN_API = "https://api.parafin.com/v1";
 const CLIENT_ID = process.env.PARAFIN_CLIENT_ID;
 const CLIENT_SECRET = process.env.PARAFIN_CLIENT_SECRET;
 
+const auth = {
+  username: CLIENT_ID,
+  password: CLIENT_SECRET,
+};
+
+async function parafin(method, path, data = null) {
+  const config = { method, url: `${PARAFIN_API}${path}`, auth };
+  if (data) config.data = data;
+  const res = await axios(config);
+  return res.data;
+}
+
 app.get("/api/parafin/token/:personId", async (req, res) => {
   try {
     const { personId } = req.params;

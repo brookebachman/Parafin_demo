@@ -93,35 +93,48 @@ function App() {
       {(personId || businessId) && (
         <div
           style={{
-            padding: 12,
-            background: "#f5f5f5",
-            borderRadius: 4,
+            padding: 16,
+            background: "#fafafa",
+            border: "1px solid #e0e0e0",
+            borderRadius: 8,
             marginBottom: 24,
             fontSize: 13,
+            fontFamily: "monospace",
+            lineHeight: 1.8,
           }}
         >
           {activeState && (
-            <div>
-              <strong>State:</strong> {activeState}
+            <div
+              style={{
+                fontSize: 15,
+                fontFamily: "system-ui",
+                fontWeight: 600,
+                marginBottom: 8,
+              }}
+            >
+              {activeState}
             </div>
           )}
           {personId && (
             <div>
-              <strong>Person ID:</strong> {personId}
+              <span style={{ color: "#666" }}>Person ID:</span> {personId}
             </div>
           )}
           {businessId && (
             <div>
-              <strong>Business ID:</strong> {businessId}
+              <span style={{ color: "#666" }}>Business ID:</span> {businessId}
             </div>
           )}
           <button
             onClick={reloadWidget}
             style={{
-              marginTop: 8,
-              padding: "4px 12px",
+              marginTop: 12,
+              padding: "6px 16px",
               fontSize: 13,
               cursor: "pointer",
+              background: "#fff",
+              border: "1px solid #ccc",
+              borderRadius: 4,
             }}
           >
             Reload Widget
